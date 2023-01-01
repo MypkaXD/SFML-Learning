@@ -6,11 +6,12 @@ class Game {
 private:
     sf::RenderWindow m_window;
     sf::CircleShape m_player;
-    bool mIsMovingUp, mIsMovingDown, mIsMovingLeft, mIsMovingRight;
+    bool mIsMovingUp = false, mIsMovingDown = false, mIsMovingLeft = false, mIsMovingRight = false;
 public:
     Game(size_t width, size_t heigth, char* name) : m_window(sf::VideoMode(width, heigth), name), m_player() {
         m_player.setFillColor(sf::Color::Cyan);
         m_player.setRadius(10.f);
+        m_player.setPosition(100.f,100.f);
     }
     void run() {
         while (m_window.isOpen()) {
