@@ -6,6 +6,9 @@ class Game {
 private:
     sf::RenderWindow m_window;
     sf::CircleShape m_player;
+    //sf::RenderWindow::setVerticalSyncEnabled();// вкл или выкл V-Sync
+    float PlayerSpeed = 100.f;
+    sf::Time TimePerFrame = sf::seconds(1.f / 144.f);
     bool mIsMovingUp = false, mIsMovingDown = false, mIsMovingLeft = false, mIsMovingRight = false;
 public:
     Game(size_t width, size_t heigth, char* name) : m_window(sf::VideoMode(width, heigth), name), m_player() {
@@ -14,24 +17,30 @@ public:
         m_player.setPosition(100.f,100.f);
     }
     void run() {
+        sf::Clock clock;
+        sf::Time timeSinceLastUpdate = sf::Time::Zero;
         while (m_window.isOpen()) {
-            processEvents();
-            update();
+            timeSinceLastUpdate += clock.restart(); 
+            while (timeSinceLastUpdate > TimePerFrame) {
+                timeSinceLastUpdate -= TimePerFrame;
+                processEvents();
+                update(TimePerFrame);
+            }
             render();
         }
     }
 private:
-    void update() {
+    void update(sf::Time deltaTime) {
         sf::Vector2f movement(0.f, 0.f);
         if (mIsMovingUp)
-            movement.y -= 0.1f;
+            movement.y -= PlayerSpeed;
         if (mIsMovingDown)
-            movement.y += 0.1f;
+            movement.y += PlayerSpeed;
         if (mIsMovingLeft)
-            movement.x -= 0.1f;
+            movement.x -= PlayerSpeed;
         if (mIsMovingRight)
-            movement.x += 0.1f;
-        m_player.move(movement);
+            movement.x += PlayerSpeed;
+        m_player.move(movement * deltaTime.asSeconds());
     }
     void render() {
         m_window.clear();
